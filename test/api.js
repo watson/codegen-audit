@@ -8,10 +8,10 @@ const api = require('../lib/api')
 
 test('should detect eval', (t) => {
   eval('1 + 1') // should not detect lines from before it's started
-  const end = api.start()
+  const done = api.start()
   eval('1 + 1'); const l1 = getLineNo()
   eval('1 + 1'); const l2 = getLineNo()
-  const report = end()
+  const report = done()
   t.deepEqual(report, {
     eval: [
       `at Test.<anonymous> (test/api.js:${l1}:3)`,
@@ -23,10 +23,10 @@ test('should detect eval', (t) => {
 
 test('should detect new Function', (t) => {
   new Function('1 + 1')() // should not detect lines from before it's started
-  const end = api.start()
+  const done = api.start()
   new Function('1 + 1')(); const l1 = getLineNo()
   new Function('1 + 1')(); const l2 = getLineNo()
-  const report = end()
+  const report = done()
   t.deepEqual(report, {
     Function: [
       `at Test.<anonymous> (test/api.js:${l1}:3)`,
@@ -38,11 +38,11 @@ test('should detect new Function', (t) => {
 
 test('should only detect first invocation', (t) => {
   let l1, l2
-  const end = api.start()
+  const done = api.start()
   evil()
   evil()
   evil()
-  const report = end()
+  const report = done()
   t.deepEqual(report, {
     eval: [`at evil (test/api.js:${l1}:5)`],
     Function: [`at evil (test/api.js:${l2}:5)`]
@@ -59,11 +59,11 @@ test('should call onUnknown callback', (t) => {
   t.plan(3)
 
   const lineNo = getLineNo()
-  const end = api.start(conf())
+  const done = api.start(conf())
   eval('1 + 1'); const l1 = getLineNo()
   eval('1 + 1'); const l2 = getLineNo()
 
-  const report = end()
+  const report = done()
   t.deepEqual(report, {
     eval: [
       `at Test.<anonymous> (test/api.js:${l1}:3)`,
