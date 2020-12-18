@@ -1,0 +1,42 @@
+{
+  "name": "codegen-audit",
+  "version": "0.0.0",
+  "description": "Audit a Node.js application and detect where code generation from strings is being used",
+  "main": "lib/api.js",
+  "bin": "lib/cli.js",
+  "files": [
+    "lib/**/*"
+  ],
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "minimist": "^1.2.5"
+  },
+  "devDependencies": {
+    "standard": "^16.0.3",
+    "tape": "^5.0.1"
+  },
+  "scripts": {
+    "test": "standard && node test/api.js && rm -f test.json && codegen-audit --out test.json node test/example-app.js | node test/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/watson/codegen-audit.git"
+  },
+  "keywords": [
+    "codegen",
+    "audit",
+    "security",
+    "prototype",
+    "pollution",
+    "code",
+    "generation"
+  ],
+  "author": "Thomas Watson <w@tson.dk> (https://twitter.com/wa7son)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/watson/codegen-audit/issues"
+  },
+  "homepage": "https://github.com/watson/codegen-audit#readme"
+}
