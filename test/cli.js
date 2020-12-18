@@ -1,6 +1,5 @@
 'use strict'
 
-const { EOL } = require('os')
 const { join } = require('path')
 const { readFile } = require('fs')
 
@@ -10,7 +9,7 @@ test('program should give expected output', (t) => {
   const stdin = []
   process.stdin.on('data', stdin.push.bind(stdin))
   process.stdin.on('end', () => {
-    const lines = Buffer.concat(stdin).toString().trim().split(EOL)
+    const lines = Buffer.concat(stdin).toString().trim().split('\n')
     t.deepEqual(lines, [
       'hello from eval',
       'hello from Function'
