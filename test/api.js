@@ -2,8 +2,6 @@
 
 /* eslint-disable no-eval, no-new-func */
 
-const { EOL } = require('os')
-
 const test = require('tape')
 
 const api = require('../lib/api')
@@ -92,5 +90,5 @@ test('should call onUnknown callback', (t) => {
 function getLineNo () {
   const obj = {}
   Error.captureStackTrace(obj, getLineNo)
-  return parseInt(obj.stack.split(EOL)[1].match(/(\d*):\d*\)$/)[1], 10)
+  return parseInt(obj.stack.split('\n')[1].match(/(\d*):\d*\)$/)[1], 10)
 }
