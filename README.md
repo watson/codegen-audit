@@ -3,7 +3,7 @@
 Audit a Node.js application and detect where code generation from strings is being used (`eval()`, `new Function()`).
 
 [![npm](https://img.shields.io/npm/v/codegen-audit.svg)](https://www.npmjs.com/package/codegen-audit)
-[![build status](https://travis-ci.org/watson/codegen-audit.svg?branch=master)](https://travis-ci.org/watson/codegen-audit)
+[![build status](https://github.com/watson/codegen-audit/workflows/CI/badge.svg?branch=master)](https://github.com/watson/codegen-audit/actions?query=workflow%3ACI+branch%3Amaster)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
 
 ## Installation
