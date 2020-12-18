@@ -1,6 +1,6 @@
 # codegen-audit
 
-Audit a Node.js application and detect where code generation from strings is being used (`eval()`, `Function()`).
+Audit a Node.js application and detect where code generation from strings is being used (i.e. any use of the functions `eval()` or `Function()`).
 
 [![npm](https://img.shields.io/npm/v/codegen-audit.svg)](https://www.npmjs.com/package/codegen-audit)
 [![build status](https://github.com/watson/codegen-audit/workflows/CI/badge.svg?branch=master)](https://github.com/watson/codegen-audit/actions?query=workflow%3ACI+branch%3Amaster)
@@ -71,7 +71,8 @@ codegen-audit [options] -- node script.js
 The following CLI options are supported:
 
 - `--log` - Output logs to STDERR (default: no logging)
-- `--out=...` - Set custom path for report file (default: `./codegen-audit.json`)
+- `--out=...` - Set custom path for where the report file should be generated (default: `./codegen-audit.json`)
+- `--allow=...` - Set path for an exsiting report used as an allowlist. If a call to a code-generation function happens not in this allowlist, an Error will be thrown (default: `./codegen-audit.json`)
 - `--report` - Analyze report file and output to STDOUT
 - `--help`, `-h` - Output help
 - `--version`, `-v` - Output version number
@@ -86,12 +87,12 @@ This module can be used programmatically as well.
 Consider the file `my-app.js`:
 
 ```js
-const codegenAudit = require('codegen-audit')
+const CodeGenAuditor = require('codegen-audit')
 
-const done = codegenAudit.start()
+const auditor = new CodeGenAuditor()
 eval('console.log("hello from eval")')
 new Function('console.log("hello from Function")')()
-const report = done()
+const report = auditor.end()
 
 console.log('report:', report)
 ```
@@ -108,11 +109,32 @@ report: {
 }
 ```
 
-### `start()`
+### `new CodeGenAuditor([options])`
 
-Starts mointoring for calls to code generation functions.
+The module exposes a single event-emitter object called `CodeGenAuditor`.
+When initialized,
+it starts to monitor for calls to code generation functions.
 
-Returns a `done` function, which when called, will stop the monitoring and return a `report` object.
+Options:
+
+- `report` - Optionally seed the auditor with a report generated previously (by `auditor.end()`).
+  Any code-generation call present in the seeded report, will not tigger an `error` event.
+- `errorOnUnknown` - If set to `true`,
+  an `error` event will be emitted if the monitored application tries to use a code-generator function in a new location
+  (default: `false`).
+
+### Event: 'error'
+
+Emitted when the monitored application tries to use a code-generator function in a new location.
+
+Listeners will be called with a single argument containing an Error object.
+
+### `auditor.end()`
+
+Will stop the monitoring and return a `report` object with the following structure:
+
+- `eval` - An array of strings. Each string is the calling stack frame to the `eval` function.
+- `Function` - An array of strings. Each string is the calling stack frame to the `Function` function.
 
 ## License
 

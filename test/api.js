@@ -4,14 +4,14 @@
 
 const test = require('tape')
 
-const api = require('../lib/api')
+const CodeGenAuditor = require('../lib/api')
 
 test('should detect eval', (t) => {
   eval('1 + 1') // should not detect lines from before it's started
-  const done = api.start()
+  const auditor = new CodeGenAuditor()
   eval('1 + 1'); const l1 = getLineNo()
   eval('1 + 1'); const l2 = getLineNo()
-  const report = done()
+  const report = auditor.end()
   t.deepEqual(report, {
     eval: [
       `at Test.<anonymous> (test/api.js:${l1}:3)`,
@@ -23,10 +23,10 @@ test('should detect eval', (t) => {
 
 test('should detect new Function', (t) => {
   new Function('1 + 1')() // should not detect lines from before it's started
-  const done = api.start()
+  const auditor = new CodeGenAuditor()
   new Function('1 + 1')(); const l1 = getLineNo()
   new Function('1 + 1')(); const l2 = getLineNo()
-  const report = done()
+  const report = auditor.end()
   t.deepEqual(report, {
     Function: [
       `at Test.<anonymous> (test/api.js:${l1}:3)`,
@@ -38,11 +38,11 @@ test('should detect new Function', (t) => {
 
 test('should only detect first invocation', (t) => {
   let l1, l2
-  const done = api.start()
+  const auditor = new CodeGenAuditor()
   evil()
   evil()
   evil()
-  const report = done()
+  const report = auditor.end()
   t.deepEqual(report, {
     eval: [`at evil (test/api.js:${l1}:5)`],
     Function: [`at evil (test/api.js:${l2}:5)`]
@@ -55,15 +55,15 @@ test('should only detect first invocation', (t) => {
   }
 })
 
-test('should call onUnknown callback', (t) => {
+test('should emit error if given allow-list', (t) => {
   t.plan(3)
 
   const lineNo = getLineNo()
-  const done = api.start(conf())
+  const auditor = getAuditor()
   eval('1 + 1'); const l1 = getLineNo()
   eval('1 + 1'); const l2 = getLineNo()
 
-  const report = done()
+  const report = auditor.end()
   t.deepEqual(report, {
     eval: [
       `at Test.<anonymous> (test/api.js:${l1}:3)`,
@@ -72,18 +72,18 @@ test('should call onUnknown callback', (t) => {
   })
   t.end()
 
-  function conf () {
-    return {
-      allow: {
+  function getAuditor () {
+    return new CodeGenAuditor({
+      report: {
         eval: [
           `at Test.<anonymous> (test/api.js:${lineNo + 2}:3)`
         ]
       },
-      onUnknown (fn, frame) {
-        t.strictEqual(fn.name, 'eval')
-        t.strictEqual(frame, `at Test.<anonymous> (test/api.js:${lineNo + 3}:3)`)
-      }
-    }
+      errorOnUnknown: true
+    }).on('error', (err) => {
+      t.ok(err instanceof Error)
+      t.equal(err.message, `Unallowed call to 'eval' at Test.<anonymous> (test/api.js:${lineNo + 3}:3)`)
+    })
   }
 })
 

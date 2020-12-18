@@ -18,7 +18,10 @@
     "tape": "^5.0.1"
   },
   "scripts": {
-    "test": "standard && node test/api.js && rm -f test.json && node lib/cli.js --out test.json node test/example-app.js | node test/cli.js"
+    "test": "npm run test:lint && npm run test:api && npm run test:cli",
+    "test:lint": "standard",
+    "test:api": "node test/api.js",
+    "test:cli": "test/cli.sh"
   },
   "repository": {
     "type": "git",
