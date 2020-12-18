@@ -18,7 +18,7 @@
     "tape": "^5.0.1"
   },
   "scripts": {
-    "test": "standard && node test/api.js && rm -f test.json && codegen-audit --out test.json node test/example-app.js | node test/cli.js"
+    "test": "standard && node test/api.js && rm -f test.json && node lib/cli.js --out test.json node test/example-app.js | node test/cli.js"
   },
   "repository": {
     "type": "git",
