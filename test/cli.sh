@@ -5,6 +5,9 @@ set -ex
 rm -f test.json
 node lib/cli.js --out test.json node test/example-app.js | node test/cli.js
 
+rm -f test.json
+CI_SIMULATE_SIGINT=true node lib/cli.js --out test.json node test/example-app.js | node test/cli.js
+
 set +e
 node lib/cli.js --allow test/example-app-allowlist-fail.json node test/example-app.js
 if [ $? -eq 0 ]; then

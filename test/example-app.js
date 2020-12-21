@@ -7,4 +7,12 @@ new Function('console.log("hello from Function")')() // eslint-disable-line no-n
 const { join } = require('path')
 const { spawn } = require('child_process')
 
-spawn(process.argv0, [join('test', 'child-process.js')], { stdio: 'inherit' })
+const cp = spawn(process.argv0, [join('test', 'child-process.js')], { stdio: 'inherit' })
+
+if (process.env.CI_SIMULATE_SIGINT === 'true') {
+  setInterval(() => {}, 100000)
+  setTimeout(() => {
+    cp.kill('SIGINT')
+    process.kill(process.pid, 'SIGINT')
+  }, 1000)
+}
