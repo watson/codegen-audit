@@ -21,11 +21,35 @@ test('should detect eval', (t) => {
   t.end()
 })
 
+test('should throw on new eval', (t) => {
+  const auditor = new CodeGenAuditor()
+  t.throws(() => {
+    new eval('1 + 1') // eslint-disable-line no-new, new-cap
+  })
+  auditor.end()
+  t.end()
+})
+
 test('should detect new Function', (t) => {
   new Function('1 + 1')() // should not detect lines from before it's started
   const auditor = new CodeGenAuditor()
   new Function('1 + 1')(); const l1 = getLineNo()
   new Function('1 + 1')(); const l2 = getLineNo()
+  const report = auditor.end()
+  t.deepEqual(report, {
+    Function: [
+      `at Test.<anonymous> (test/api.js:${l1}:3)`,
+      `at Test.<anonymous> (test/api.js:${l2}:3)`
+    ]
+  })
+  t.end()
+})
+
+test('should detect Function', (t) => {
+  Function('1 + 1')() // should not detect lines from before it's started
+  const auditor = new CodeGenAuditor()
+  Function('1 + 1')(); const l1 = getLineNo()
+  Function('1 + 1')(); const l2 = getLineNo()
   const report = auditor.end()
   t.deepEqual(report, {
     Function: [
