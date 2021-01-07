@@ -17,7 +17,7 @@ In an ideal world,
 this behaviour is probably what you want,
 but if you're working with an existing application,
 it might not be feasable to remove all instances of code-generation from day one.
-Or you might have legitimate use-cases to one of these functions,
+Or you might have legitimate use-cases for using one of these functions,
 and just want to allow those,
 while disallowing all other uses.
 
