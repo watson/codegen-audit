@@ -72,6 +72,7 @@ The following CLI options are supported:
 
 - `--report=...` - Set custom path to the report file (default: `./codegen-audit.json`).
 - `--throw` - If a call to a code-generation function occurs that is not in the existing report (see `--report`), an Error will be thrown.
+- `--no-exit-on-signals` - Do not exit the process on `SIGINT`/`SIGTERM`.
 - `--analyze` - Analyze existing report file and output to STDOUT.
 - `--log` - Output logs to STDERR (default: no logging).
 - `--help`, `-h` - Output help.
