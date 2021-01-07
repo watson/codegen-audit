@@ -70,10 +70,10 @@ codegen-audit [options] -- node script.js
 
 The following CLI options are supported:
 
+- `--report=...` - Set custom path to the report file (default: `./codegen-audit.json`)
+- `--throw` - If a call to a code-generation function occurs that is not in the existing report (see `--report`), an Error will be thrown
+- `--analyze` - Analyze existing report file and output to STDOUT
 - `--log` - Output logs to STDERR (default: no logging)
-- `--out=...` - Set custom path for where the report file should be generated (default: `./codegen-audit.json`)
-- `--allow=...` - Set path for an exsiting report used as an allowlist. If a call to a code-generation function happens not in this allowlist, an Error will be thrown (default: `./codegen-audit.json`)
-- `--report` - Analyze report file and output to STDOUT
 - `--help`, `-h` - Output help
 - `--version`, `-v` - Output version number
 
