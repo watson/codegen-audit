@@ -139,6 +139,33 @@ envs.forEach((env) => {
         t.end()
       })
     })
+
+    t.test('--analyze', (t) => {
+      const args = [
+        join('lib', 'cli.js'),
+        '--analyze',
+        '--report',
+        'test.json'
+      ]
+
+      run(process.argv0, args, (err, stdout, stderr, code) => {
+        t.error(err)
+        t.equal(code, 0)
+        t.equal(stderr, '')
+        t.equal(stdout, `test/child-process.js:
+  eval:
+    at Object.<anonymous> (test/child-process.js:3:1)
+  Function:
+    at Object.<anonymous> (test/child-process.js:5:1)
+test/example-app.js:
+  eval:
+    at Object.<anonymous> (test/example-app.js:3:1)
+  Function:
+    at Object.<anonymous> (test/example-app.js:5:1)
+`)
+        t.end()
+      })
+    })
   })
 })
 
