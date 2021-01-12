@@ -91,7 +91,14 @@ envs.forEach((env) => {
         t.error(err)
         t.deepEqual(stdout.split('\n').sort(), expectedOutput.sort())
         t.equal(stderr, '')
-        t.end()
+
+        // Wait a short while to avoid a race condition, where this test ends
+        // before all the child processes has time to write to test.json, which
+        // is needed for the next test case to work. This only happens on some
+        // platforms sometimes.
+        setTimeout(() => {
+          t.end()
+        }, 100)
       })
     })
 
