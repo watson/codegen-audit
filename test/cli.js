@@ -23,6 +23,8 @@ function run (cmd, args, opts, cb) {
   let code = null
   let signal = null
 
+  opts.shell = true
+
   const cp = spawn(cmd, args, opts)
 
   cp.stdout.on('data', (data) => { stdout += data })
