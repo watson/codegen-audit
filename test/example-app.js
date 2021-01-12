@@ -11,7 +11,7 @@ const cp1 = spawn(process.argv0, [join('test', 'child-process.js')], { stdio: 'i
 const cp2 = spawn(process.argv0, [join('test', 'child-process.js')], { stdio: 'inherit' })
 
 if (process.env.CI_SIMULATE_SIGINT === 'true') {
-  setInterval(() => {}, 100000)
+  setInterval(() => {}, 100000) // hold the process open forever
   setTimeout(() => {
     console.log('kill: SIGINT')
     cp1.kill('SIGINT')
