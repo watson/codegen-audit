@@ -80,7 +80,7 @@ The following CLI options are supported:
 
 ### Audit Report
 
-When the monitored process exits, a report file will be generated in the current working directory named `codegen-audit.json` (or at location specified by `--out`).
+When the monitored process exits, a report file will be generated in the current working directory named `codegen-audit.json` (or at location specified by `--report`).
 
 ## API
 
