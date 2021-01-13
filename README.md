@@ -42,38 +42,44 @@ or by installing it globally:
 npm install codegen-audit -g
 ```
 
-## Usage
+## Running
 
 If installed as dev-dependency:
 
 ```sh
-./node_modules/.bin/codegen-audit node server.js
+./node_modules/.bin/codegen-audit --help
 ```
 
 If installed globally:
 
 ```sh
-codegen-audit node server.js
+codegen-audit --help
 ```
 
 If running using npx:
 
 ```sh
-npx codegen-audit node server.js
+npx codegen-audit --help
 ```
+
+## Usage
+
+```
+codegen-audit [command] [options]
+codegen-audit [options] [bin-to-instrument]
+```
+
+### Commands
+
+- `parse [file]` - Parse a report and output a human readable version (file default: `./codegen-audit.json`).
 
 ### Options
-
-```
-codegen-audit [options] -- node script.js
-```
 
 The following CLI options are supported:
 
 - `--report=...` - Set custom path to the report file (default: `./codegen-audit.json`).
 - `--throw` - If a call to a code-generation function occurs that is not in the existing report (see `--report`), an Error will be thrown.
 - `--no-exit-on-signals` - Do not exit the process on `SIGINT`/`SIGTERM`.
-- `--analyze` - Analyze existing report file and output to STDOUT.
 - `--log` - Output logs to STDERR (default: no logging).
 - `--help`, `-h` - Output help.
 - `--version`, `-v` - Output version number.

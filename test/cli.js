@@ -140,11 +140,10 @@ envs.forEach((env) => {
       })
     })
 
-    t.test('--analyze', (t) => {
+    t.test('parse', (t) => {
       const args = [
         join('lib', 'cli.js'),
-        '--analyze',
-        '--report',
+        'parse',
         'test.json'
       ]
 
