@@ -215,3 +215,43 @@ test('does not throw', (t) => {
     t.end()
   })
 })
+
+test('diff different', (t) => {
+  const args = [
+    join('lib', 'cli.js'),
+    'diff',
+    join('test', 'diff1.json'),
+    join('test', 'diff2.json')
+  ]
+
+  run(process.argv0, args, (err, stdout, stderr, code) => {
+    t.error(err)
+    t.equal(code, 1)
+    t.equal(stderr, `Missing eval invocation in common-script: b-exist-in-old
+Missing Function invocation in common-script: b-exist-in-old
+Unknown Function invocation in common-script: a-exist-in-new
+Unknown Function invocation in common-script: d-exist-in-new
+Missing script: script-should-be-missing
+Unknown script: script-should-be-unknown
+`)
+    t.equal(stdout, '')
+    t.end()
+  })
+})
+
+test('diff same', (t) => {
+  const args = [
+    join('lib', 'cli.js'),
+    'diff',
+    join('test', 'diff1.json'),
+    join('test', 'diff1.json')
+  ]
+
+  run(process.argv0, args, (err, stdout, stderr, code) => {
+    t.error(err)
+    t.equal(code, 0)
+    t.equal(stderr, '')
+    t.equal(stdout, '')
+    t.end()
+  })
+})

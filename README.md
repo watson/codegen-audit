@@ -72,6 +72,7 @@ codegen-audit [options] [bin-to-instrument]
 ### Commands
 
 - `parse [file]` - Parse a report and output a human readable version (file default: `./codegen-audit.json`).
+- `diff <file1> <file2>` - Analyze two reports and output the differences.
 
 ### Options
 

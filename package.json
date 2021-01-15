@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "lockfile": "^1.0.4",
-    "minimist": "^1.2.5"
+    "minimist": "^1.2.5",
+    "odiff": "^1.4.2"
   },
   "devDependencies": {
     "standard": "^16.0.3",
