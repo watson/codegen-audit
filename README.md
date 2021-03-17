@@ -78,6 +78,7 @@ codegen-audit [options] [bin-to-instrument]
 
 The following CLI options are supported:
 
+- `--` - Indicate the end of options. Pass the rest of the arguments to the bin-to-instrument.
 - `--report=...` - Set custom path to the report file (default: `./codegen-audit.json`).
 - `--throw` - If a call to a code-generation function occurs that is not in the existing report (see `--report`), an Error will be thrown.
 - `--no-exit-on-signals` - Do not exit the process on `SIGINT`/`SIGTERM`.
