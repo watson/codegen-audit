@@ -82,7 +82,11 @@ The following CLI options are supported:
 - `--report=...` - Set custom path to the report file (default: `./codegen-audit.json`).
 - `--throw` - If a call to a code-generation function occurs that is not in the existing report (see `--report`), an Error will be thrown.
 - `--no-exit-on-signals` - Do not exit the process on `SIGINT`/`SIGTERM`.
-- `--log` - Output logs to STDERR (default: no logging).
+- `--verbose` - A little chatty.
+- `--very-verbose` - Very chatty.
+- `--color` - Force use of ANSI colors in log output (will auto-detect if not specified).
+- `--no-color` - Force disable of ANSI colors in log output (will auto-detect if not specified).
+- `--log-dest=...` - Set custom logging destination: `1` for STDOUT, `2` for STDERR, or a path to a log file (default: `2`).
 - `--help`, `-h` - Output help.
 - `--version`, `-v` - Output version number.
 
