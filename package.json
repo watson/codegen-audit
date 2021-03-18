@@ -8,7 +8,7 @@
     "lib/**/*"
   ],
   "directories": {
-    "test": "test"
+    "test": "standard && test"
   },
   "dependencies": {
     "chalk": "^4.1.0",
