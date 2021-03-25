@@ -83,13 +83,6 @@ envs.forEach((env) => {
       const opts = { env: Object.assign({}, process.env, env) }
 
       run(process.argv0, args, opts, (err, stdout, stderr, code, signal) => {
-        // process._rawDebug(
-        //   `-- ERROR START:\n${require('util').inspect(err)}\n-- ERROR END\n` +
-        //   `-- STDOUT START:\n${stdout}\n-- STDOUT END\n` +
-        //   `-- STDERR START:\n${stderr}\n-- STDERR END\n` +
-        //   `-- CODE START:\n${code}\n-- CODE END\n` +
-        //   `-- SIGNAL START:\n${signal}\n-- SIGNAL END`
-        // )
         t.error(err)
         t.deepEqual(stdout.split('\n').sort(), expectedOutput.sort())
         t.equal(stderr, '')
