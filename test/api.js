@@ -60,6 +60,36 @@ test('should detect Function', (t) => {
   t.end()
 })
 
+test('should detect Function.apply', (t) => {
+  Function.apply(null, ['1 + 1'])() // should not detect lines from before it's started
+  const auditor = new CodeGenAuditor()
+  Function.apply(null, ['1 + 1'])(); const l1 = getLineNo()
+  Function.apply(null, ['1 + 1'])(); const l2 = getLineNo()
+  const report = auditor.end()
+  t.deepEqual(report, {
+    Function: [
+      `at Test.<anonymous> (test/api.js:${l1}:12)`,
+      `at Test.<anonymous> (test/api.js:${l2}:12)`
+    ]
+  })
+  t.end()
+})
+
+test('should detect Function.call', (t) => {
+  Function.call(null, '1 + 1')() // should not detect lines from before it's started
+  const auditor = new CodeGenAuditor()
+  Function.call(null, '1 + 1')(); const l1 = getLineNo()
+  Function.call(null, '1 + 1')(); const l2 = getLineNo()
+  const report = auditor.end()
+  t.deepEqual(report, {
+    Function: [
+      `at Test.<anonymous> (test/api.js:${l1}:12)`,
+      `at Test.<anonymous> (test/api.js:${l2}:12)`
+    ]
+  })
+  t.end()
+})
+
 test('should only detect first invocation', (t) => {
   let l1, l2
   const auditor = new CodeGenAuditor()
