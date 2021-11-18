@@ -7,15 +7,15 @@ const test = require('tape')
 const CodeGenAuditor = require('../lib/api')
 
 test('should detect eval', (t) => {
-  eval('1 + 1') // should not detect lines from before it's started
+  assertTwo(t, eval('1 + 1')) // should not detect lines from before it's started
   const auditor = new CodeGenAuditor()
-  eval('1 + 1'); const l1 = getLineNo()
-  eval('1 + 1'); const l2 = getLineNo()
+  assertTwo(t, eval('1 + 1')); const l1 = getLineNo()
+  assertTwo(t, eval('1 + 1')); const l2 = getLineNo()
   const report = auditor.end()
   t.deepEqual(report, {
     eval: [
-      `at Test.<anonymous> (test/api.js:${l1}:3)`,
-      `at Test.<anonymous> (test/api.js:${l2}:3)`
+      `at Test.<anonymous> (test/api.js:${l1}:16)`,
+      `at Test.<anonymous> (test/api.js:${l2}:16)`
     ]
   })
   t.end()
@@ -31,60 +31,60 @@ test('should throw on new eval', (t) => {
 })
 
 test('should detect new Function', (t) => {
-  new Function('1 + 1')() // should not detect lines from before it's started
+  assertTwo(t, new Function('return 1 + 1')()) // should not detect lines from before it's started
   const auditor = new CodeGenAuditor()
-  new Function('1 + 1')(); const l1 = getLineNo()
-  new Function('1 + 1')(); const l2 = getLineNo()
+  assertTwo(t, new Function('return 1 + 1')()); const l1 = getLineNo()
+  assertTwo(t, new Function('return 1 + 1')()); const l2 = getLineNo()
   const report = auditor.end()
   t.deepEqual(report, {
     Function: [
-      `at Test.<anonymous> (test/api.js:${l1}:3)`,
-      `at Test.<anonymous> (test/api.js:${l2}:3)`
+      `at Test.<anonymous> (test/api.js:${l1}:16)`,
+      `at Test.<anonymous> (test/api.js:${l2}:16)`
     ]
   })
   t.end()
 })
 
 test('should detect Function', (t) => {
-  Function('1 + 1')() // should not detect lines from before it's started
+  assertTwo(t, Function('return 1 + 1')()) // should not detect lines from before it's started
   const auditor = new CodeGenAuditor()
-  Function('1 + 1')(); const l1 = getLineNo()
-  Function('1 + 1')(); const l2 = getLineNo()
+  assertTwo(t, Function('return 1 + 1')()); const l1 = getLineNo()
+  assertTwo(t, Function('return 1 + 1')()); const l2 = getLineNo()
   const report = auditor.end()
   t.deepEqual(report, {
     Function: [
-      `at Test.<anonymous> (test/api.js:${l1}:3)`,
-      `at Test.<anonymous> (test/api.js:${l2}:3)`
+      `at Test.<anonymous> (test/api.js:${l1}:16)`,
+      `at Test.<anonymous> (test/api.js:${l2}:16)`
     ]
   })
   t.end()
 })
 
 test('should detect Function.apply', (t) => {
-  Function.apply(null, ['1 + 1'])() // should not detect lines from before it's started
+  assertTwo(t, Function.apply(null, ['return 1 + 1'])()) // should not detect lines from before it's started
   const auditor = new CodeGenAuditor()
-  Function.apply(null, ['1 + 1'])(); const l1 = getLineNo()
-  Function.apply(null, ['1 + 1'])(); const l2 = getLineNo()
+  assertTwo(t, Function.apply(null, ['return 1 + 1'])()); const l1 = getLineNo()
+  assertTwo(t, Function.apply(null, ['return 1 + 1'])()); const l2 = getLineNo()
   const report = auditor.end()
   t.deepEqual(report, {
     Function: [
-      `at Test.<anonymous> (test/api.js:${l1}:12)`,
-      `at Test.<anonymous> (test/api.js:${l2}:12)`
+      `at Test.<anonymous> (test/api.js:${l1}:25)`,
+      `at Test.<anonymous> (test/api.js:${l2}:25)`
     ]
   })
   t.end()
 })
 
 test('should detect Function.call', (t) => {
-  Function.call(null, '1 + 1')() // should not detect lines from before it's started
+  assertTwo(t, Function.call(null, 'return 1 + 1')()) // should not detect lines from before it's started
   const auditor = new CodeGenAuditor()
-  Function.call(null, '1 + 1')(); const l1 = getLineNo()
-  Function.call(null, '1 + 1')(); const l2 = getLineNo()
+  assertTwo(t, Function.call(null, 'return 1 + 1')()); const l1 = getLineNo()
+  assertTwo(t, Function.call(null, 'return 1 + 1')()); const l2 = getLineNo()
   const report = auditor.end()
   t.deepEqual(report, {
     Function: [
-      `at Test.<anonymous> (test/api.js:${l1}:12)`,
-      `at Test.<anonymous> (test/api.js:${l2}:12)`
+      `at Test.<anonymous> (test/api.js:${l1}:25)`,
+      `at Test.<anonymous> (test/api.js:${l2}:25)`
     ]
   })
   t.end()
@@ -140,6 +140,10 @@ test('should emit error if given allow-list', (t) => {
     })
   }
 })
+
+function assertTwo (t, num) {
+  t.equal(num, 2)
+}
 
 function getLineNo () {
   const obj = {}
