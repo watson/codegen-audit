@@ -30,6 +30,15 @@ test('should throw on new eval', (t) => {
   t.end()
 })
 
+test('should throw if started twice=', (t) => {
+  const auditor = new CodeGenAuditor()
+  t.throws(() => {
+    new CodeGenAuditor()
+  })
+  auditor.end()
+  t.end()
+})
+
 test('should detect new Function', (t) => {
   assertTwo(t, new Function('return 1 + 1')()) // should not detect lines from before it's started
   const auditor = new CodeGenAuditor()
