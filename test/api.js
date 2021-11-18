@@ -33,7 +33,7 @@ test('should throw on new eval', (t) => {
 test('should throw if started twice=', (t) => {
   const auditor = new CodeGenAuditor()
   t.throws(() => {
-    new CodeGenAuditor()
+    new CodeGenAuditor() // eslint-disable-line no-new
   })
   auditor.end()
   t.end()
@@ -85,10 +85,11 @@ test('should detect Function', (t) => {
 })
 
 test('should detect Function.apply', (t) => {
+  // eslint-disable-next-line no-useless-call
   assertTwo(t, Function.apply(null, ['return 1 + 1'])()) // should not detect lines from before it's started
   const auditor = new CodeGenAuditor()
-  assertTwo(t, Function.apply(null, ['return 1 + 1'])()); const l1 = getLineNo()
-  assertTwo(t, Function.apply(null, ['return 1 + 1'])()); const l2 = getLineNo()
+  assertTwo(t, Function.apply(null, ['return 1 + 1'])()); const l1 = getLineNo() // eslint-disable-line no-useless-call
+  assertTwo(t, Function.apply(null, ['return 1 + 1'])()); const l2 = getLineNo() // eslint-disable-line no-useless-call
   const report = auditor.end()
   t.deepEqual(report, {
     Function: [
@@ -100,10 +101,11 @@ test('should detect Function.apply', (t) => {
 })
 
 test('should detect Function.call', (t) => {
+  // eslint-disable-next-line no-useless-call
   assertTwo(t, Function.call(null, 'return 1 + 1')()) // should not detect lines from before it's started
   const auditor = new CodeGenAuditor()
-  assertTwo(t, Function.call(null, 'return 1 + 1')()); const l1 = getLineNo()
-  assertTwo(t, Function.call(null, 'return 1 + 1')()); const l2 = getLineNo()
+  assertTwo(t, Function.call(null, 'return 1 + 1')()); const l1 = getLineNo() // eslint-disable-line no-useless-call
+  assertTwo(t, Function.call(null, 'return 1 + 1')()); const l2 = getLineNo() // eslint-disable-line no-useless-call
   const report = auditor.end()
   t.deepEqual(report, {
     Function: [
