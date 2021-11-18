@@ -30,7 +30,7 @@ test('should throw on new eval', (t) => {
   t.end()
 })
 
-test('should throw if started twice=', (t) => {
+test('should throw if started twice', (t) => {
   const auditor = new CodeGenAuditor()
   t.throws(() => {
     new CodeGenAuditor() // eslint-disable-line no-new
