@@ -45,6 +45,21 @@ test('should detect new Function', (t) => {
   t.end()
 })
 
+test('should detect new Function with arguments', (t) => {
+  assertTwo(t, new Function('a', 'return a + 1')(1)) // should not detect lines from before it's started
+  const auditor = new CodeGenAuditor()
+  assertTwo(t, new Function('a', 'return a + 1')(1)); const l1 = getLineNo()
+  assertTwo(t, new Function('a', 'return a + 1')(1)); const l2 = getLineNo()
+  const report = auditor.end()
+  t.deepEqual(report, {
+    Function: [
+      `at Test.<anonymous> (test/api.js:${l1}:16)`,
+      `at Test.<anonymous> (test/api.js:${l2}:16)`
+    ]
+  })
+  t.end()
+})
+
 test('should detect Function', (t) => {
   assertTwo(t, Function('return 1 + 1')()) // should not detect lines from before it's started
   const auditor = new CodeGenAuditor()
