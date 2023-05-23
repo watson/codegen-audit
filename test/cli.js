@@ -103,31 +103,13 @@ envs.forEach((env) => {
         data = JSON.parse(data)
         t.deepEqual(data, {
           'test/child-process.js': [
-            {
-              eval: [
-                'at Object.<anonymous> (test/child-process.js:3:1)'
-              ],
-              Function: [
-                'at Object.<anonymous> (test/child-process.js:5:1)'
-              ]
-            },
-            {
-              eval: [
-                'at Object.<anonymous> (test/child-process.js:3:1)'
-              ],
-              Function: [
-                'at Object.<anonymous> (test/child-process.js:5:1)'
-              ]
-            }
+            'at Object.<anonymous> (test/child-process.js:3:1)',
+            'at Object.<anonymous> (test/child-process.js:5:1)'
           ],
-          'test/example-app.js': [{
-            eval: [
-              'at Object.<anonymous> (test/example-app.js:3:1)'
-            ],
-            Function: [
-              'at Object.<anonymous> (test/example-app.js:5:1)'
-            ]
-          }]
+          'test/example-app.js': [
+            'at Object.<anonymous> (test/example-app.js:3:1)',
+            'at Object.<anonymous> (test/example-app.js:5:1)'
+          ]
         })
         t.end()
       })
@@ -145,15 +127,11 @@ envs.forEach((env) => {
         t.equal(code, 0)
         t.equal(stderr, '')
         t.equal(stdout, `test/child-process.js:
-  eval:
-    at Object.<anonymous> (test/child-process.js:3:1)
-  Function:
-    at Object.<anonymous> (test/child-process.js:5:1)
+  at Object.<anonymous> (test/child-process.js:3:1)
+  at Object.<anonymous> (test/child-process.js:5:1)
 test/example-app.js:
-  eval:
-    at Object.<anonymous> (test/example-app.js:3:1)
-  Function:
-    at Object.<anonymous> (test/example-app.js:5:1)
+  at Object.<anonymous> (test/example-app.js:3:1)
+  at Object.<anonymous> (test/example-app.js:5:1)
 `)
         t.end()
       })
@@ -161,12 +139,12 @@ test/example-app.js:
   })
 })
 
-test('throw', (t) => {
+test('abort', (t) => {
   const args = [
     join('lib', 'cli.js'),
     '--report',
     join('test', 'example-app-allowlist-fail.json'),
-    '--throw',
+    '--abort',
     '--',
     process.argv0,
     join('test', 'example-app.js')
@@ -174,7 +152,7 @@ test('throw', (t) => {
 
   run(process.argv0, args, (err, stdout, stderr, code, signal) => {
     t.error(err)
-    t.ok(stderr.includes('Illegal call to \'Function\' at Object.<anonymous> (test/example-app.js:5:1)'))
+    t.ok(stderr.startsWith('Error: Illegal code generation from string at Object.<anonymous> (test/example-app.js:5:1)'))
     t.equal(code, 1)
     t.equal(signal, null)
     t.equal(stdout, 'hello from eval\n')
@@ -182,12 +160,12 @@ test('throw', (t) => {
   })
 })
 
-test('does not throw', (t) => {
+test('does not abort', (t) => {
   const args = [
     join('lib', 'cli.js'),
     '--report',
     join('test', 'example-app-allowlist-ok.json'),
-    '--throw',
+    '--abort',
     '--',
     process.argv0,
     join('test', 'example-app.js')
@@ -220,10 +198,9 @@ test('diff different', (t) => {
   run(process.argv0, args, (err, stdout, stderr, code) => {
     t.error(err)
     t.equal(code, 1)
-    t.equal(stderr, `Missing eval invocation in common-script: b-exist-in-old
-Missing Function invocation in common-script: b-exist-in-old
-Unknown Function invocation in common-script: a-exist-in-new
-Unknown Function invocation in common-script: d-exist-in-new
+    t.equal(stderr, `Missing invocation in common-script: b-exist-in-old
+Unknown invocation in common-script: a-exist-in-new
+Unknown invocation in common-script: d-exist-in-new
 Missing script: script-should-be-missing
 Unknown script: script-should-be-unknown
 `)

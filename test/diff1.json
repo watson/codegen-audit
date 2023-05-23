@@ -1,26 +1,8 @@
 {
   "common-script":[
-    {
-      "eval":[
-        "a-exist-in-both",
-        "b-exist-in-old"
-      ],
-      "Function":[
-        "b-exist-in-old"
-      ]
-    },{
-      "eval":[
-        "a-exist-in-both"
-      ],
-      "Function":[
-        "c-exist-in-both"
-      ]
-    }
+    "a-exist-in-both",
+    "b-exist-in-old",
+    "c-exist-in-both"
   ],
-  "script-should-be-missing":[
-    {
-      "eval":[],
-      "Function":[]
-    }
-  ]
+  "script-should-be-missing":[]
 }

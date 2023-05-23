@@ -80,7 +80,7 @@ The following CLI options are supported:
 
 - `--` - Indicate the end of options. Pass the rest of the arguments to the bin-to-instrument.
 - `--report=...` - Set custom path to the report file (default: `./codegen-audit.json`).
-- `--throw` - If a call to a code-generation function occurs that is not in the existing report (see `--report`), an Error will be thrown.
+- `--abort` - If a call to a code-generation function occurs that is not in the existing report (see `--report`), the program will exit with an error.
 - `--no-exit-on-signals` - Do not exit the process on `SIGINT`/`SIGTERM`.
 - `--verbose` - A little chatty.
 - `--very-verbose` - Very chatty.
@@ -116,10 +116,10 @@ you'll get the following output:
 ```
 hello from eval
 hello from Function
-report: {
-  eval: [ 'at Object.<anonymous> (my-app.js:4:1)' ],
-  Function: [ 'at Object.<anonymous> (my-app.js:5:1)' ]
-}
+report: [
+  'at Object.<anonymous> (my-app.js:4:1)',
+  'at Object.<anonymous> (my-app.js:5:1)'
+]
 ```
 
 ### `new CodeGenAuditor([options])`
@@ -144,10 +144,7 @@ Listeners will be called with a single argument containing an Error object.
 
 ### `auditor.end()`
 
-Will stop the monitoring and return a `report` object with the following structure:
-
-- `eval` - An array of strings. Each string is the calling stack frame to the `eval` function.
-- `Function` - An array of strings. Each string is the calling stack frame to the `Function` function.
+Will stop the monitoring and return a `report` array where each element is a string that represents the calling stack frame to the `eval` or `Function` function.
 
 ## License
 

@@ -24,8 +24,8 @@
   "scripts": {
     "test": "npm run test:lint && npm run test:api && npm run test:cli",
     "test:lint": "standard",
-    "test:api": "node test/api.js",
-    "test:cli": "node test/cli.js"
+    "test:api": "~/code/nodejs/node/node test/api.js",
+    "test:cli": "~/code/nodejs/node/node test/cli.js"
   },
   "repository": {
     "type": "git",

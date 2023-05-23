@@ -2,6 +2,10 @@
 
 /* eslint-disable no-eval, no-new-func */
 
+// Technically the eval column numbers asserted below are all slightly wrong.
+// This is due to a limitation in how stack traces are generated when crossing
+// the JS/C++ boundary.
+
 const test = require('tape')
 
 const CodeGenAuditor = require('../lib/api')
@@ -12,30 +16,24 @@ test('should detect eval', (t) => {
   assertTwo(t, eval('1 + 1')); const l1 = getLineNo()
   assertTwo(t, eval('1 + 1')); const l2 = getLineNo()
   const report = auditor.end()
-  t.deepEqual(report, {
-    eval: [
-      `at Test.<anonymous> (test/api.js:${l1}:16)`,
-      `at Test.<anonymous> (test/api.js:${l2}:16)`
-    ]
-  })
+  t.deepEqual(report, [
+    `at Test.<anonymous> (test/api.js:${l1}:13)`,
+    `at Test.<anonymous> (test/api.js:${l2}:13)`
+  ])
   t.end()
 })
 
-test('should throw on new eval', (t) => {
+test('should detect indirect eval', (t) => {
+  const indirectEval = eval
+  assertTwo(t, indirectEval('1 + 1')) // should not detect lines from before it's started
   const auditor = new CodeGenAuditor()
-  t.throws(() => {
-    new eval('1 + 1') // eslint-disable-line no-new, new-cap
-  })
-  auditor.end()
-  t.end()
-})
-
-test('should throw if started twice', (t) => {
-  const auditor = new CodeGenAuditor()
-  t.throws(() => {
-    new CodeGenAuditor() // eslint-disable-line no-new
-  })
-  auditor.end()
+  assertTwo(t, indirectEval('1 + 1')); const l1 = getLineNo()
+  assertTwo(t, indirectEval('1 + 1')); const l2 = getLineNo()
+  const report = auditor.end()
+  t.deepEqual(report, [
+    `at Test.<anonymous> (test/api.js:${l1}:16)`,
+    `at Test.<anonymous> (test/api.js:${l2}:16)`
+  ])
   t.end()
 })
 
@@ -45,12 +43,10 @@ test('should detect new Function', (t) => {
   assertTwo(t, new Function('return 1 + 1')()); const l1 = getLineNo()
   assertTwo(t, new Function('return 1 + 1')()); const l2 = getLineNo()
   const report = auditor.end()
-  t.deepEqual(report, {
-    Function: [
-      `at Test.<anonymous> (test/api.js:${l1}:16)`,
-      `at Test.<anonymous> (test/api.js:${l2}:16)`
-    ]
-  })
+  t.deepEqual(report, [
+    `at Test.<anonymous> (test/api.js:${l1}:16)`,
+    `at Test.<anonymous> (test/api.js:${l2}:16)`
+  ])
   t.end()
 })
 
@@ -60,12 +56,10 @@ test('should detect new Function with arguments', (t) => {
   assertTwo(t, new Function('a', 'return a + 1')(1)); const l1 = getLineNo()
   assertTwo(t, new Function('a', 'return a + 1')(1)); const l2 = getLineNo()
   const report = auditor.end()
-  t.deepEqual(report, {
-    Function: [
-      `at Test.<anonymous> (test/api.js:${l1}:16)`,
-      `at Test.<anonymous> (test/api.js:${l2}:16)`
-    ]
-  })
+  t.deepEqual(report, [
+    `at Test.<anonymous> (test/api.js:${l1}:16)`,
+    `at Test.<anonymous> (test/api.js:${l2}:16)`
+  ])
   t.end()
 })
 
@@ -75,12 +69,10 @@ test('should detect Function', (t) => {
   assertTwo(t, Function('return 1 + 1')()); const l1 = getLineNo()
   assertTwo(t, Function('return 1 + 1')()); const l2 = getLineNo()
   const report = auditor.end()
-  t.deepEqual(report, {
-    Function: [
-      `at Test.<anonymous> (test/api.js:${l1}:16)`,
-      `at Test.<anonymous> (test/api.js:${l2}:16)`
-    ]
-  })
+  t.deepEqual(report, [
+    `at Test.<anonymous> (test/api.js:${l1}:16)`,
+    `at Test.<anonymous> (test/api.js:${l2}:16)`
+  ])
   t.end()
 })
 
@@ -91,12 +83,10 @@ test('should detect Function.apply', (t) => {
   assertTwo(t, Function.apply(null, ['return 1 + 1'])()); const l1 = getLineNo() // eslint-disable-line no-useless-call
   assertTwo(t, Function.apply(null, ['return 1 + 1'])()); const l2 = getLineNo() // eslint-disable-line no-useless-call
   const report = auditor.end()
-  t.deepEqual(report, {
-    Function: [
-      `at Test.<anonymous> (test/api.js:${l1}:25)`,
-      `at Test.<anonymous> (test/api.js:${l2}:25)`
-    ]
-  })
+  t.deepEqual(report, [
+    `at Test.<anonymous> (test/api.js:${l1}:25)`,
+    `at Test.<anonymous> (test/api.js:${l2}:25)`
+  ])
   t.end()
 })
 
@@ -107,12 +97,10 @@ test('should detect Function.call', (t) => {
   assertTwo(t, Function.call(null, 'return 1 + 1')()); const l1 = getLineNo() // eslint-disable-line no-useless-call
   assertTwo(t, Function.call(null, 'return 1 + 1')()); const l2 = getLineNo() // eslint-disable-line no-useless-call
   const report = auditor.end()
-  t.deepEqual(report, {
-    Function: [
-      `at Test.<anonymous> (test/api.js:${l1}:25)`,
-      `at Test.<anonymous> (test/api.js:${l2}:25)`
-    ]
-  })
+  t.deepEqual(report, [
+    `at Test.<anonymous> (test/api.js:${l1}:25)`,
+    `at Test.<anonymous> (test/api.js:${l2}:25)`
+  ])
   t.end()
 })
 
@@ -123,10 +111,10 @@ test('should only detect first invocation', (t) => {
   evil()
   evil()
   const report = auditor.end()
-  t.deepEqual(report, {
-    eval: [`at evil (test/api.js:${l1}:5)`],
-    Function: [`at evil (test/api.js:${l2}:5)`]
-  })
+  t.deepEqual(report, [
+    `at evil (test/api.js:${l1}:5)`,
+    `at evil (test/api.js:${l2}:5)`
+  ])
   t.end()
 
   function evil () {
@@ -144,27 +132,36 @@ test('should emit error if given allow-list', (t) => {
   eval('1 + 1'); const l2 = getLineNo()
 
   const report = auditor.end()
-  t.deepEqual(report, {
-    eval: [
-      `at Test.<anonymous> (test/api.js:${l1}:3)`,
-      `at Test.<anonymous> (test/api.js:${l2}:3)`
-    ]
-  })
+  t.deepEqual(report, [
+    `at Test.<anonymous> (test/api.js:${l1}:3)`,
+    `at Test.<anonymous> (test/api.js:${l2}:3)`
+  ])
   t.end()
 
   function getAuditor () {
     return new CodeGenAuditor({
-      report: {
-        eval: [
-          `at Test.<anonymous> (test/api.js:${lineNo + 2}:3)`
-        ]
-      },
+      report: [
+        `at Test.<anonymous> (test/api.js:${lineNo + 2}:3)`
+      ],
       errorOnUnknown: true
     }).on('error', (err) => {
       t.ok(err instanceof Error)
-      t.equal(err.message, `Unallowed call to 'eval' at Test.<anonymous> (test/api.js:${lineNo + 3}:3)`)
+      t.equal(err.message, `Illegal code generation from string at Test.<anonymous> (test/api.js:${lineNo + 3}:3)`)
     })
   }
+})
+
+test('should stop listener when end is called', (t) => {
+  t.equal(0, process.listeners('codeGenerationFromString').length)
+  const a1 = new CodeGenAuditor()
+  t.equal(1, process.listeners('codeGenerationFromString').length)
+  const a2 = new CodeGenAuditor()
+  t.equal(2, process.listeners('codeGenerationFromString').length)
+  a2.end()
+  t.equal(1, process.listeners('codeGenerationFromString').length)
+  a1.end()
+  t.equal(0, process.listeners('codeGenerationFromString').length)
+  t.end()
 })
 
 function assertTwo (t, num) {

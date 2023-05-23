@@ -1,9 +1,5 @@
 {
-  "test/example-app.js": [{
-    "eval": [
-      "at Object.<anonymous> (test/example-app.js:3:1)"
-    ],
-    "Function": [
-    ]
-  }]
+  "test/example-app.js": [
+    "at Object.<anonymous> (test/example-app.js:3:1)"
+  ]
 }
